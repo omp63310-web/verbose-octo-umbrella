@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MY RESULT PORTAL</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#eef3f8;color:#222}
+header{background:#e4002b;color:#fff;text-align:center;padding:25px 15px}
+header h1{margin:0;font-size:34px}
+header p{margin:8px 0 0;font-size:18px}
+nav{background:#063b6d;display:flex;justify-content:center;flex-wrap:wrap;gap:4px}
+nav a{color:#fff;text-decoration:none;padding:16px 13px;font-weight:bold;display:block}
+nav a:hover{background:#0b568f}
+.search-wrap{max-width:900px;margin:25px auto;padding:0 15px}
+.search{display:flex;background:#fff;border:1px solid #ccc;border-radius:7px;overflow:hidden}
+.search input{flex:1;border:0;padding:16px;font-size:17px;outline:0}
+.search button{border:0;background:#e4002b;color:#fff;padding:0 28px;font-weight:bold;cursor:pointer}
+.container{max-width:1200px;margin:auto;padding:0 15px 40px}
+.updates{background:#fff;border-top:6px solid #ffb400;border-radius:10px;padding:20px 25px;margin-bottom:25px}
+.updates h2{color:#e4002b;margin-top:0}
+.update-list{margin:0;padding-left:22px}
+.update-list li{margin:9px 0}
+.update-list a{color:#075aa6}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.card{background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px #0001}
+.card h2{margin:0;background:#063b6d;color:#fff;padding:16px 20px;font-size:23px}
+.items{padding:0}
+.item{padding:16px 20px;border-bottom:1px solid #ddd}
+.item:last-child{border-bottom:0}
+.item-title{font-size:18px;font-weight:bold;line-height:1.35;margin-bottom:9px}
+.item a.btn{display:inline-block;background:#075aa6;color:#fff;text-decoration:none;padding:9px 14px;border-radius:5px;font-weight:bold}
+.item a.btn:hover{background:#e4002b}
+.empty{padding:20px;color:#777}
+footer{text-align:center;background:#063b6d;color:#fff;padding:20px;margin-top:20px}
+@media(max-width:800px){
+  header h1{font-size:27px}
+  header p{font-size:15px}
+  nav{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap}
+  nav a{white-space:nowrap;padding:13px 12px}
+  .grid{grid-template-columns:1fr}
+}
+@media(max-width:500px){
+  .search{display:flex}
+  .search input{font-size:14px;padding:13px}
+  .search button{padding:0 16px}
+  .updates{padding:16px}
+  .card h2{font-size:20px}
+  .item{padding:14px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>MY RESULT PORTAL</h1>
+  <p>Latest Jobs, Results, Admit Cards, Admissions & Answer Keys</p>
+</header>
+
+<nav>
+  <a href="#home">Home</a>
+  <a href="#latest-jobs">Latest Jobs</a>
+  <a href="#sarkari-yojana">Sarkari Yojana</a>
+  <a href="#admit-card">Admit Card</a>
+  <a href="#results">Results</a>
+  <a href="#admission">Admission</a>
+  <a href="#scholarship">Scholarship</a>
+  <a href="#university">University Update</a>
+  <a href="#others">Others</a>
+</nav>
+
+<div class="search-wrap" id="home">
+  <div class="search">
+    <input id="searchInput" type="search" placeholder="Search Jobs, Results, Admit Card, Admission...">
+    <button onclick="searchItems()">Search</button>
+  </div>
+</div>
+
+<main class="container">
+
+<section class="updates">
+  <h2>📢 Latest Updates</h2>
+  <ul class="update-list" id="updatesList"></ul>
+</section>
+
+<div class="grid" id="sections"></div>
+
+</main>
+
+<footer>© 2026 MY RESULT PORTAL | All Rights Reserved</footer>
+
+<script>
+/*
+  ADMIN PANEL READY STRUCTURE
+  --------------------------------
+  Future में admin panel जोड़ने पर इसी "siteData" object को
+  database/API से load किया जा सकता है। अभी data इसी file में है।
+*/
+
+const siteData = {
+  "latest-jobs": {
+    title:"💼 Latest Jobs",
+    items:[
+      ["SBI Junior Associates Clerk Online Form 2026 (9124 Posts) – Last Date: 31 August 2026","https://sarkariresult.com.cm/sbi-junior-associates-clerk-2026/"],
+      ["IBPS Clerk (CSA) 16th Online Form 2026 (11,403 Posts) – Last Date: 21 August 2026","https://sarkariresult.com.cm/ibps-clerk-16th-2026/"],
+      ["UPSSSC PET Online Form 2026 – Last Date: 1 September 2026","https://sarkariresult.com.cm/upsssc-pet-2026/"],
+      ["AIIMS NORCET 11th Nursing Officer Online Form 2026","https://sarkariresult.com.cm/aiims-norcet-11th-nursing-officer-2026/"],
+      ["Railway RRB Section Controller Online Form 2026","https://sarkariresult.com.cm/rrb-section-controller-03-2026/"],
+      ["ISRO Assistant & Junior Personal Assistant Online Form 2026","https://sarkariresult.com.cm/isro-assistant-2026/"],
+      ["GIMS Noida Staff Nurse Online Form 2026","https://sarkariresult.com.cm/gims-noida-staff-nurse-2026/"],
+      ["Railway ICF Apprentice Online Form 2026","https://sarkariresult.com.cm/railway-icf-apprentice-2026/"],
+      ["UP Anganwadi Bharti Online Form 2026","https://sarkariresult.com.cm/up-anganwadi-bharti-2026/"],
+      ["RRB Junior Engineer JE Online Form 2026","https://sarkariresult.com.cm/rrb-je-2026/"]
+    ]
+  },
+
+  "sarkari-yojana": {
+    title:"🏛️ Sarkari Yojana",
+    items:[
+      ["Sarkari Yojana – सभी सरकारी योजनाओं की जानकारी","#"],
+      ["PM Yojana / Government Scheme Updates","#"]
+    ]
+  },
+
+  "admit-card": {
+    title:"🎫 Admit Card",
+    items:[
+      ["Railway RRB Group D Exam City / Admit Card 2026","https://sarkariresult.com.cm/railway-rrb-group-d-level-1-recruitment-2026-online/"],
+      ["NEET PG Exam City Details 2026","https://sarkariresult.com.cm/neet-pg-2026/"],
+      ["BSNL Junior Telecom Officer JTO Exam City Details 2026 – Out","https://sarkariresult.com.cm/bsnl-junior-telecom-officer-jto-2026/"],
+      ["UPPSC LT Grade Assistant Teacher Mains Admit Card 2026","https://sarkariresult.com.cm/uppsc-lt-grade-assistant-teacher-2026/"],
+      ["UP Police Constable DV / PST Admit Card 2026 – Out","https://sarkariresult.com.cm/up-police-constable-2026/"],
+      ["IBPS CRP PO MT XVI PET Admit Card 2026 – Out","https://sarkariresult.com.cm/ibps-po-mt-xvi-2026/"],
+      ["CSBC Bihar Police Driver DET Admit Card 2026","https://sarkariresult.com.cm/csbc-bihar-police-driver-2026/"],
+      ["SSC CPO SI PET/PST Admit Card 2026","https://sarkariresult.com.cm/ssc-cpo-si-paper-i-2025/"],
+      ["SBI PO Pre Admit Card 2026","https://sarkariresult.com.cm/sbi-po-2026/"],
+      ["Bihar Police CSBC Constable GD Admit Card 2026","https://sarkariresult.com.cm/bihar-police-csbc-constable-2026/"]
+    ]
+  },
+
+  "results": {
+    title:"📄 Results",
+    items:[
+      ["CBSE Board 12th Compartment Result 2026 – Out","https://sarkariresult.com.cm/cbse-12th-result-2026/"],
+      ["Bihar Police BPSSC SI Prohibition Pre Result 2026 – Out","https://sarkariresult.com.cm/bihar-police-bpssc-si-prohibition-2026/"],
+      ["BPSSC Bihar Police Havildar Instructor Result 2026 – Out","https://sarkariresult.com.cm/bpssc-havildar-instructor-2026/"],
+      ["HPSC PGT Computer Science Final Result 2026","https://sarkariresult.com.cm/hpsc-pgt-computer-science-2026/"],
+      ["AIIMS CRE 5th Group B, C Result 2026","https://sarkariresult.com.cm/aiims-cre-5th-group-b-c-2026/"],
+      ["AFCAT 02/2026 Answer Key – Out","https://sarkariresult.com.cm/afcat-02-2026/"],
+      ["BCECE Admission 2026 2nd Round Allotment Result","https://sarkariresult.com.cm/bcece-admission-2026/"],
+      ["BPSC ASO Mains Result 2026","https://sarkariresult.com.cm/bpsc-aso-mains-2026/"],
+      ["SSC MTS / Havaldar Result 2026 – Out","https://sarkariresult.com.cm/ssc-mts-havaldar-2026/"],
+      ["UP Board Class 10th, 12th Compartment Result 2026 – Out","https://sarkariresult.com.cm/up-board-result-2026/"],
+      ["RRB Group-D Result / Score Card 2026 – Out","https://sarkariresult.com.cm/railway-rrb-group-d-2026-chk-now/"],
+      ["UP Polytechnic JEECUP Allotment Result 2026 – Out","https://sarkariresult.com.cm/up-polytechnic-jeecup-2026/"]
+    ]
+  },
+
+  "admission": {
+    title:"🎓 Admission",
+    items:[
+      ["Bihar DCECE-PE 2026 PM / PMM 1st Round Allotment Result","https://sarkariresult.com.cm/dcece-bihar-polytechnic-2026/"],
+      ["BCECE Admission 2026 2nd Round Allotment Result","https://sarkariresult.com.cm/bcece-admission-2026/"],
+      ["Bihar CET B.Ed 5th Round Allotment Result 2026","https://sarkariresult.com.cm/bihar-cet-b-ed-2026/"],
+      ["UP CNET 2nd Round Allotment Result 2026","https://sarkariresult.com.cm/up-cnet-2026/"],
+      ["Magadh University UG 2nd Merit List 2026","https://sarkariresult.com.cm/magadh-university-ug-2026/"],
+      ["JPU UG 2nd Merit List 2026","https://sarkariresult.com.cm/jpu-ug-2026/"]
+    ]
+  },
+
+  "scholarship": {
+    title:"📚 Scholarship",
+    items:[
+      ["Scholarship Latest Updates","#"],
+      ["Student Scholarship Information","#"]
+    ]
+  },
+
+  "university": {
+    title:"🏫 University Update",
+    items:[
+      ["BRABU UG 5th Merit List 2026","https://sarkariresult.com.cm/brabu-ug-2026/"],
+      ["LNMU UG 2nd Merit List 2026 – Out","https://sarkariresult.com.cm/lnmu-ug-admission-2026/"],
+      ["Magadh University UG 2nd Merit List 2026","https://sarkariresult.com.cm/magadh-university-ug-2026/"],
+      ["JPU UG 2nd Merit List 2026","https://sarkariresult.com.cm/jpu-ug-2026/"],
+      ["Patliputra University PPUP UG 2nd Merit List 2026 – Out","https://sarkariresult.com.cm/ppup-ug-admission-2026/"]
+    ]
+  },
+
+  "others": {
+    title:"📌 Others / Answer Key",
+    items:[
+      ["UPSSSC Agriculture Technical Assistant Group-C Answer Key 2026 – Out","https://sarkariresult.com.cm/upsssc-agriculture-technical-assistant-group-c-2026/"],
+      ["Delhi DSSSB July Answer Key 2026","https://sarkariresult.com.cm/dsssb-various-post-2026/"],
+      ["AFCAT 02/2026 Answer Key – Out","https://sarkariresult.com.cm/afcat-02-2026/"],
+      ["NTA ICAR AIEEA PG Ph.D Answer Key 2026","https://sarkariresult.com.cm/nta-icar-aieea-pg-and-phd-2026/"],
+      ["NTA CSIR UGC NET June Answer Key 2026","https://sarkariresult.com.cm/nta-csir-ugc-net-june-2026/"],
+      ["NTA UGC NET June Answer Key 2026","https://sarkariresult.com.cm/nta-ugc-net-june-2025/"],
+      ["RRB ALP CBT-II Answer Key 2026","https://sarkariresult.com.cm/railway-rrb-alp-2026/"],
+      ["UPSC CMS Answer Key 2026","https://sarkariresult.com.cm/upsc-cms-2026/"],
+      ["UPTET Answer Key 2026 – Link Active","https://sarkariresult.com.cm/uptet-2026/"],
+      ["UPSSSC Lekhpal Revised Answer Key 2026 – Out","https://sarkariresult.com.cm/upsssc-lekhpal-2026/"],
+      ["RRB Junior Engineer JE CBT-2 Answer Key 2026","https://sarkariresult.com.cm/rrb-junior-engineer-je-2026/"],
+      ["SSC CGL Tier-II Final Answer Key / Marks 2026 – Out","https://sarkariresult.com.cm/ssc-cgl-2025/"]
+    ]
+  }
+};
+
+function renderSections(data=siteData){
+  const container=document.getElementById("sections");
+  container.innerHTML="";
+  Object.entries(data).forEach(([id,section])=>{
+    const card=document.createElement("section");
+    card.className="card";
+    card.id=id;
+    card.innerHTML=`<h2>${section.title}</h2><div class="items"></div>`;
+    const items=card.querySelector(".items");
+
+    section.items.forEach(([title,url])=>{
+      const row=document.createElement("div");
+      row.className="item";
+      const safeUrl=url && url!=="#" ? url : "#";
+      row.innerHTML=`
+        <div class="item-title">${title}</div>
+        <a class="btn" href="${safeUrl}" ${safeUrl!=="#"?'target="_blank" rel="noopener"':''}>
+          ${section.title.includes("Result") ? "Check Result →" : "View Details →"}
+        </a>`;
+      items.appendChild(row);
+    });
+    container.appendChild(card);
+  });
+}
+
+function renderUpdates(){
+  const list=document.getElementById("updatesList");
+  const all=[];
+  Object.values(siteData).forEach(section=>{
+    section.items.slice(0,2).forEach(item=>all.push(item));
+  });
+  list.innerHTML=all.slice(0,8).map(([title,url])=>{
+    return `<li><a href="${url}" target="_blank" rel="noopener">${title}</a></li>`;
+  }).join("");
+}
+
+function searchItems(){
+  const q=document.getElementById("searchInput").value.trim().toLowerCase();
+  if(!q){renderSections();return;}
+
+  const filtered={};
+  Object.entries(siteData).forEach(([id,section])=>{
+    const matches=section.items.filter(([title])=>title.toLowerCase().includes(q));
+    if(matches.length) filtered[id]={title:section.title,items:matches};
+  });
+  renderSections(filtered);
+  document.getElementById("sections").scrollIntoView({behavior:"smooth"});
+}
+
+document.getElementById("searchInput").addEventListener("keydown",e=>{
+  if(e.key==="Enter") searchItems();
+});
+
+renderSections();
+renderUpdates();
+</script>
+</body>
+</html>
